@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Tic-Tac-Toe</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <main class="wrap">
+    <header class="top">
+      <h1 class="title">Tic-Tac-Toe</h1>
+      <div class="turn" id="turnChip" aria-live="polite" aria-atomic="true">Turn: X</div>
+    </header>
+
+    <section class="mode" role="group" aria-label="Game Mode">
+      <button class="seg selected" id="modeHuman" aria-pressed="true">Human vs Human</button>
+      <button class="seg" id="modeAI" aria-pressed="false">Human vs AI</button>
+    </section>
+
+    <section class="board" id="board" role="grid" aria-label="Tic-Tac-Toe Board">
+      <button class="cell" role="gridcell" data-i="0" aria-label="Cell 1" tabindex="0"></button>
+      <button class="cell" role="gridcell" data-i="1" aria-label="Cell 2" tabindex="0"></button>
+      <button class="cell" role="gridcell" data-i="2" aria-label="Cell 3" tabindex="0"></button>
+      <button class="cell" role="gridcell" data-i="3" aria-label="Cell 4" tabindex="0"></button>
+      <button class="cell" role="gridcell" data-i="4" aria-label="Cell 5" tabindex="0"></button>
+      <button class="cell" role="gridcell" data-i="5" aria-label="Cell 6" tabindex="0"></button>
+      <button class="cell" role="gridcell" data-i="6" aria-label="Cell 7" tabindex="0"></button>
+      <button class="cell" role="gridcell" data-i="7" aria-label="Cell 8" tabindex="0"></button>
+      <button class="cell" role="gridcell" data-i="8" aria-label="Cell 9" tabindex="0"></button>
+    </section>
+
+    <section class="controls">
+      <button class="btn primary" id="playAgain" hidden>Play Again</button>
+      <button class="btn ghost" id="resetBtn">Reset Game</button>
+    </section>
+
+    <div class="banner" id="resultBanner" role="status" aria-live="polite" hidden>
+      <p id="resultText"></p>
+    </div>
+  </main>
+
+  <!-- Sticky footer with links -->
+  <footer class="social-footer">
+    <a href="https://github.com/your-username" target="_blank" class="social-btn github-btn" rel="noopener">GitHub</a>
+    <a href="https://linkedin.com/in/your-linkedin" target="_blank" class="social-btn linkedin-btn" rel="noopener">LinkedIn</a>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>
