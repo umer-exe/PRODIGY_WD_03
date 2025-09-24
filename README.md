@@ -5,11 +5,8 @@ Live Demo Link : https://umer-exe.github.io/PRODIGY_WD_03/
 A fun, interactive Tic-Tac-Toe web app built with HTML, CSS, and vanilla JavaScript, no frameworks, no external JS dependencies.
 Supports Human vs Human and Human vs AI modes, shows whose turn it is, and announces the winner with a Play Again button.
 
-✨ Features
-
 ### Two Game Modes
 - Human vs Human:  play with a friend
-
 - Human vs AI: challenge a smart AI opponent powered by a minimax algorithm
 
 ### Turn Indicator
