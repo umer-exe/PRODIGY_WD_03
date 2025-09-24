@@ -87,13 +87,14 @@ body{
   border-color:transparent;
 }
 
-/* ------------------ Board (static sizing) ------------------ */
+/* ------------------ Board (locked sizing) ------------------ */
 .board{
   width:min(86vw, 460px);
-  aspect-ratio:1/1;           /* perfect square no matter content */
+  aspect-ratio:1/1;                   /* overall board is a perfect square */
   margin-inline:auto;
   display:grid;
-  grid-template-columns:repeat(3,1fr);
+  grid-template-columns:repeat(3, 1fr);
+  grid-template-rows:repeat(3, 1fr);  /* <-- ensures rows never resize */
   gap:12px;
   padding:8px;
   background:#fff;
@@ -102,17 +103,20 @@ body{
 }
 
 .cell{
+  min-width:0;
+  min-height:0;
+  aspect-ratio:1/1;                   /* each cell stays square */
+  padding:0;                          /* no default button padding */
   border:1px solid var(--surface-border);
   border-radius:14px;
   background:#fff;
   display:flex; align-items:center; justify-content:center;
   font-size:clamp(32px, 8vw, 56px);
-  line-height:1;              /* keep glyph size tight, no reflow */
+  line-height:1;                      /* no vertical growth */
   font-weight:800;
   color:var(--text);
   cursor:pointer;
   box-shadow:0 2px 0 rgba(0,0,0,.07);
-  /* Only visual transitions that do not affect layout */
   transition: background-color .16s ease, box-shadow .16s ease;
 }
 .cell:hover{ background:#faf7ff; }
@@ -120,7 +124,6 @@ body{
   outline:0;
   box-shadow:0 0 0 3px var(--brand-soft);
 }
-/* removed transform-based :active animation to prevent any perceived shrink */
 
 /* ------------------ Controls ------------------ */
 .controls{
