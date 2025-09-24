@@ -10,6 +10,9 @@ const modeHuman = document.getElementById("modeHuman");
 const modeAI = document.getElementById("modeAI");
 
 let board, current, gameOver, vsAI;
+
+const HUMAN = "X";
+const AI = "O";
 const LINES = [
   [0,1,2],[3,4,5],[6,7,8],
   [0,3,6],[1,4,7],[2,5,8],
@@ -21,9 +24,9 @@ init();
 // ---------- Init / Reset ----------
 function init(){
   board = Array(9).fill(null);
-  current = "X";
+  current = HUMAN;        // X always starts (per your earlier spec)
   gameOver = false;
-  vsAI = false;             // default: Human vs Human
+  vsAI = false;           // default mode: Human vs Human
 
   // Hide any lingering result UI
   resultBanner.hidden = true;
@@ -36,7 +39,7 @@ function init(){
 
 function playAgain(){
   board.fill(null);
-  current = "X";
+  current = HUMAN;
   gameOver = false;
 
   resultBanner.hidden = true;
@@ -112,24 +115,22 @@ function onCellClick(){
 
   place(i, current);
 
-  const result = evaluateBoard(board);
-  if (result !== null){
-    endGame(result);
-    return;
-  }
+  let outcome = evaluate(board);
+  if (outcome !== null){ endGame(outcome); return; }
 
-  current = current === "X" ? "O" : "X";
+  current = current === HUMAN ? AI : HUMAN;
   render();
 
-  if (vsAI && !gameOver && current === "O"){
+  if (vsAI && !gameOver && current === AI){
+    // Small delay to feel natural
     setTimeout(()=>{
-      const aiMove = bestMove(board, "O");
-      place(aiMove, "O");
+      const iBest = computeBestMove(board, AI);
+      place(iBest, AI);
 
-      const res2 = evaluateBoard(board);
-      if (res2 !== null){ endGame(res2); return; }
+      outcome = evaluate(board);
+      if (outcome !== null){ endGame(outcome); return; }
 
-      current = "X";
+      current = HUMAN;
       render();
     }, 80);
   }
@@ -140,74 +141,82 @@ function place(index, mark){
   render();
 }
 
-function endGame(result){
+function endGame(outcome){
   gameOver = true;
   render();
-  if (result === 1) showResult("X wins!");
-  else if (result === -1) showResult("O wins!");
+  if (outcome === HUMAN) showResult("X wins!");
+  else if (outcome === AI) showResult("O wins!");
   else showResult("It's a draw!");
 }
 
-// ---------- Rules & Evaluation ----------
-function evaluateBoard(b){
+// ---------- Rules ----------
+function evaluate(b){
   for (const [a,b1,c] of LINES){
-    if (b[a] && b[a] === b[b1] && b[a] === b[c]){
-      return b[a] === "X" ? 1 : -1;
-    }
+    if (b[a] && b[a] === b[b1] && b[a] === b[c]) return b[a]; // 'X' or 'O'
   }
-  if (b.every(Boolean)) return 0;
+  if (b.every(Boolean)) return "draw";
   return null;
 }
 
-// ---------- AI (Minimax with memo + move ordering) ----------
-const memo = new Map();
+// ---------- AI: Unbeatable Minimax ----------
+function computeBestMove(b, aiMark){
+  // If first move, choose center if available for speed/strength
+  if (b.every(x => x === null) && b[4] === null) return 4;
 
-function bestMove(b, aiMark){
-  // AI is 'O'; minimize X's score
-  let bestIdx = -1, bestScore = Infinity;
+  let bestIndex = -1;
+  let bestScore = -Infinity; // from AI's perspective
+
+  // Try moves in good order (center -> corners -> edges)
   for (const i of orderedMoves(b)){
-    const newB = b.slice(); newB[i] = aiMark;
-    const score = minimax(newB, true, 0); // X turn next (maximize)
-    if (score < bestScore){ bestScore = score; bestIdx = i; }
+    if (b[i] != null) continue;
+    const nb = b.slice();
+    nb[i] = aiMark;
+    const score = minimax(nb, false, 0); // next is human
+    if (score > bestScore){
+      bestScore = score;
+      bestIndex = i;
+    }
   }
-  return bestIdx;
+  return bestIndex;
 }
 
-function minimax(b, isMax, depth){
-  const key = b.join("") + (isMax ? "M" : "m");
-  if (memo.has(key)) return memo.get(key);
-
-  const evalRes = evaluateBoard(b);
-  if (evalRes !== null){
-    const scored = evalRes === 1 ? 10 - depth
-                 : evalRes === -1 ? depth - 10
-                 : 0;
-    memo.set(key, scored);
-    return scored;
+// minimax returns score from AI's perspective
+// +10 (fast) for AI win, -10 (slow) for Human win, 0 for draw
+function minimax(b, aiTurn, depth){
+  const res = evaluate(b);
+  if (res !== null){
+    if (res === AI)   return 10 - depth;   // prefer quicker wins
+    if (res === HUMAN) return depth - 10;  // prefer slower losses
+    return 0;
   }
 
   const moves = orderedMoves(b);
-  if (isMax){ // X turn
+  if (aiTurn){ // AI to play -> maximize
     let best = -Infinity;
     for (const i of moves){
-      const nb = b.slice(); nb[i] = "X";
+      if (b[i] != null) continue;
+      const nb = b.slice();
+      nb[i] = AI;
       best = Math.max(best, minimax(nb, false, depth+1));
     }
-    memo.set(key, best); return best;
-  } else {    // O turn
+    return best;
+  } else {     // Human to play -> minimize
     let best = Infinity;
     for (const i of moves){
-      const nb = b.slice(); nb[i] = "O";
+      if (b[i] != null) continue;
+      const nb = b.slice();
+      nb[i] = HUMAN;
       best = Math.min(best, minimax(nb, true, depth+1));
     }
-    memo.set(key, best); return best;
+    return best;
   }
 }
 
+// Prefer center -> corners -> edges
 function orderedMoves(b){
-  const order = [];
-  if (!b[4]) order.push(4);
-  [0,2,6,8].forEach(i=>{ if(!b[i]) order.push(i); });
-  [1,3,5,7].forEach(i=>{ if(!b[i]) order.push(i); });
-  return order;
+  const out = [];
+  if (b[4] == null) out.push(4);
+  [0,2,6,8].forEach(i => { if (b[i] == null) out.push(i); });
+  [1,3,5,7].forEach(i => { if (b[i] == null) out.push(i); });
+  return out;
 }
