@@ -1,20 +1,19 @@
-/* ------------------ Theme & Base ------------------ */
+/* ------------------ Retro Theme & Base ------------------ */
+/* (No imports, uses system monospace for retro look) */
+
 :root{
-  --brand: #8a2be2;          /* purple accent */
-  --brand-600: #7420c5;
-  --brand-soft: #f3ecff;
+  --brand: #b84dff;          /* neon purple accent */
+  --brand-soft: #f3e5ff;
+  --brand-glow: rgba(184, 77, 255, 0.6);
 
-  --bg: #ffffff;
-  --surface: #ffffff;
-  --surface-border:#ece8ff;
+  --bg: #1a1a1a;
+  --surface: #222;
+  --surface-border:#333;
 
-  --text:#171428;
-  --text-sub:#544c74;
+  --text:#f8f8f8;
+  --text-sub:#cfcfcf;
 
-  --divider:#eadcff;
-
-  --shadow-soft: 0 20px 40px rgba(138,43,226,.14), 0 2px 8px rgba(0,0,0,.06);
-  --shadow-press: inset 0 -1px 0 rgba(0,0,0,.1);
+  --shadow-soft: 0 0 8px rgba(184,77,255,.3), 0 0 16px rgba(184,77,255,.15);
 }
 
 *{ box-sizing:border-box; }
@@ -22,180 +21,179 @@ html,body{ height:100%; }
 body{
   margin:0;
   background:var(--bg);
-  font-family: system-ui, -apple-system, Segoe UI, Roboto, "Helvetica Neue",
-               Arial, "Noto Sans", "Liberation Sans", sans-serif;
+  font-family: monospace, system-ui;
+  font-size: 15px; /* slightly bigger than before */
   color:var(--text);
-  -webkit-font-smoothing:antialiased; -moz-osx-font-smoothing:grayscale;
   display:flex; align-items:center; justify-content:center;
-  padding:24px 12px 64px; /* leave space for footer */
+  padding:24px 12px 64px;
+  text-transform: uppercase;
 }
 
 /* ------------------ Layout ------------------ */
 .wrap{
   width:min(96vw, 560px);
   background:var(--surface);
-  border:1px solid var(--surface-border);
-  border-radius:18px;
-  padding:clamp(18px, 3.5vw, 28px);
+  border:3px solid var(--surface-border);
+  border-radius:4px;
+  padding:24px;
   box-shadow:var(--shadow-soft);
   text-align:center;
 }
 
 .top{
   display:flex; align-items:center; justify-content:space-between;
-  margin-bottom:8px;
+  margin-bottom:12px;
 }
 
 .title{
   margin:0;
-  font-size:clamp(22px, 2.2vw, 28px);
-  font-weight:800;
-  letter-spacing:.2px;
-  color:var(--text);
+  font-size:1.2rem; /* bigger */
+  color:var(--brand);
+  text-shadow:0 0 6px var(--brand-glow);
 }
 
 .turn{
-  font-size:.95rem;
-  font-weight:700;
-  color:var(--brand);
-  background:var(--brand-soft);
-  border:1px solid var(--surface-border);
-  padding:6px 10px;
-  border-radius:999px;
+  font-size:0.85rem; /* bigger */
+  font-weight:bold;
+  color:var(--text);
+  background:#000;
+  border:2px solid var(--brand);
+  padding:6px 8px;
+  border-radius:2px;
+  text-shadow:0 0 4px var(--brand-glow);
 }
 
 /* ------------------ Mode switch ------------------ */
 .mode{
-  display:flex; gap:10px; justify-content:center;
-  margin:8px 0 14px;
+  display:flex; gap:6px; justify-content:center;
+  margin:12px 0 16px;
 }
 .seg{
-  border:1px solid var(--surface-border);
-  background:#fff;
+  border:2px solid var(--brand);
+  background:#000;
   color:var(--text);
-  padding:8px 14px;
-  border-radius:999px;
-  font-weight:700;
+  padding:8px 12px;
+  font-size:0.75rem; /* bigger */
+  border-radius:2px;
   cursor:pointer;
-  transition: filter .15s ease, box-shadow .15s ease;
-  box-shadow: var(--shadow-press);
+  transition:filter .15s ease, box-shadow .15s ease;
+  box-shadow:0 0 4px rgba(0,0,0,.5);
 }
-.seg:hover{ filter:brightness(1.02); }
+.seg:hover{ filter:brightness(1.2); }
 .seg.selected{
   background:var(--brand);
-  color:#fff;
-  border-color:transparent;
+  color:#000;
+  text-shadow:none;
 }
 
-/* ------------------ Board (locked sizing) ------------------ */
+/* ------------------ Board ------------------ */
 .board{
   width:min(86vw, 460px);
-  aspect-ratio:1/1;                   /* overall board is a perfect square */
+  aspect-ratio:1/1;
   margin-inline:auto;
   display:grid;
   grid-template-columns:repeat(3, 1fr);
-  grid-template-rows:repeat(3, 1fr);  /* <-- ensures rows never resize */
-  gap:12px;
-  padding:8px;
-  background:#fff;
-  border:1px solid var(--surface-border);
-  border-radius:16px;
+  grid-template-rows:repeat(3, 1fr);
+  gap:6px;
+  background:#000;
+  padding:6px;
+  border:3px solid var(--brand);
 }
 
 .cell{
-  min-width:0;
-  min-height:0;
-  aspect-ratio:1/1;                   /* each cell stays square */
-  padding:0;                          /* no default button padding */
-  border:1px solid var(--surface-border);
-  border-radius:14px;
-  background:#fff;
+  aspect-ratio:1/1;
+  background:#111;
+  border:2px solid var(--brand);
+  border-radius:2px;
   display:flex; align-items:center; justify-content:center;
-  font-size:clamp(32px, 8vw, 56px);
-  line-height:1;                      /* no vertical growth */
-  font-weight:800;
+  font-size:clamp(36px, 9vw, 64px); /* bigger */
+  font-weight:700;
   color:var(--text);
   cursor:pointer;
-  box-shadow:0 2px 0 rgba(0,0,0,.07);
-  transition: background-color .16s ease, box-shadow .16s ease;
+  box-shadow:inset 0 0 6px rgba(0,0,0,.7);
+  transition: background-color .2s ease, box-shadow .2s ease;
 }
-.cell:hover{ background:#faf7ff; }
+.cell:hover{
+  background:#222;
+  box-shadow:0 0 10px var(--brand-glow);
+}
 .cell:focus-visible{
   outline:0;
-  box-shadow:0 0 0 3px var(--brand-soft);
+  box-shadow:0 0 10px var(--brand-glow);
 }
 
 /* ------------------ Controls ------------------ */
 .controls{
-  display:flex; gap:10px; justify-content:center; align-items:center;
-  margin-top:16px;
+  display:flex; gap:8px; justify-content:center;
+  margin-top:12px;
 }
 
 .btn{
-  min-width:120px;
-  height:40px;
-  padding:0 16px;
-  border-radius:10px;
-  border:1px solid var(--surface-border);
+  min-width:110px;
+  padding:8px 12px; /* slightly taller */
+  background:#000;
+  border:2px solid var(--brand);
+  color:var(--text);
+  font-size:0.8rem; /* bigger */
   cursor:pointer;
-  font-weight:800;
-  letter-spacing:.2px;
-  transition: filter .18s ease, box-shadow .18s ease;
+  box-shadow:0 0 6px rgba(0,0,0,.6);
+  text-transform:uppercase;
+  transition:filter .15s ease, transform .05s ease;
 }
+.btn:hover{ filter:brightness(1.2); }
+.btn:active{ transform:translateY(1px); }
 
 .primary{
   background:var(--brand);
-  color:#fff;
-  border-color:transparent;
-  box-shadow:0 2px 0 rgba(31,17,64,.2);
+  color:#000;
+  font-weight:bold;
 }
-.primary:hover{ filter:brightness(1.05); }
+.primary:hover{ filter:brightness(1.1); }
 
 .ghost{
-  background:#fff; color:var(--text);
-  box-shadow: var(--shadow-press);
+  background:#000;
+  color:var(--text);
 }
-.ghost:hover{ filter:brightness(1.02); }
 
 /* ------------------ Result banner ------------------ */
 .banner{
-  margin-top:16px;
-  background:#fff;
-  border:1px solid var(--surface-border);
-  border-radius:12px;
-  padding:10px 14px;
-  box-shadow:var(--shadow-press);
+  margin-top:14px;
+  background:#000;
+  border:2px solid var(--brand);
+  padding:10px 12px;
+  border-radius:2px;
+  box-shadow:0 0 6px var(--brand-glow);
 }
 .banner p{
   margin:0;
-  font-weight:800;
-  color:var(--text-sub);
+  font-weight:bold;
+  font-size:0.85rem; /* bigger */
+  color:var(--text);
+  text-shadow:0 0 3px var(--brand-glow);
 }
 
 /* ------------------ Footer strip ------------------ */
 .social-footer{
   position:fixed; left:0; bottom:0; width:100%;
-  background:rgba(0,0,0,.65);
-  display:flex; justify-content:center; gap:8px;
-  padding:8px 0;
-  backdrop-filter: blur(6px);
-  border-top:1px solid rgba(255,255,255,.15);
-  z-index:10;
+  background:#000;
+  display:flex; justify-content:center; gap:6px;
+  padding:6px 0;
+  border-top:2px solid var(--brand);
 }
 .social-btn{
-  text-decoration:none; font-weight:800; font-size:.9rem;
-  padding:6px 14px; border-radius:6px;
-  border:1px solid rgba(255,255,255,.2);
-  transition:transform .2s ease, filter .2s ease;
+  text-decoration:none; font-weight:bold; font-size:0.7rem; /* bigger */
+  padding:5px 10px;
+  background:#111;
+  border:1px solid var(--brand);
+  color:var(--text);
+  transition:filter .2s ease;
 }
-.github-btn{ background:#8a2be2; color:#fff; }
-.linkedin-btn{ background:transparent; color:#fff; }
-.social-btn:hover{ transform:translateY(-2px); filter:brightness(1.1); }
+.social-btn:hover{ filter:brightness(1.3); }
 
-/* ------------------ Responsive tweaks ------------------ */
+/* ------------------ Responsive ------------------ */
 @media (max-width:420px){
-  .btn{ min-width:110px; }
-  .seg{ padding:7px 12px; }
+  .btn{ min-width:90px; font-size:0.7rem; }
+  .seg{ font-size:0.7rem; }
 }
 @media (prefers-reduced-motion: reduce){
   *{ transition:none !important; }
